@@ -1,0 +1,11 @@
+Options +FollowSymLinks
+RewriteEngine on
+
+#RewriteCond %{SERVER_PORT} 80 
+#RewriteRule (.*)$ https://giftcards.driveprofit.com/$1 [R=301,L]
+
+RewriteBase /giftcards/
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php?page=$1 [L,QSA]
