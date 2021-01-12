@@ -19,8 +19,9 @@
         <link rel="stylesheet" href="../code/css/pretty-checkbox.min.css">
         <link rel="stylesheet" href="../code/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
         <link rel="stylesheet" href="../code/bootstrap-datetimepicker/bootstrap-datetimepicker.min.css">
+        <link rel="stylesheet" href="../code/css/dashboard.min.css">
 
-        <script src="../code/jquery/dist/jquery.min.js"></script>        
+        <script src="../code/jquery/dist/jquery.min.js"></script>
         <script src="../code/bootstrap/dist/js/bootstrap.min.js"></script>
         <script src="../code/datatables.net/js/jquery.dataTables.min.js"></script>
         <script src="../code/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
@@ -31,7 +32,7 @@
         <script src="../code/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
         <script src="../code/scripts/moment.min.js"></script>
         <script src="../code/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js"></script>
-        
+
 
         <!-- Vaildator -->
         <script src="../code/scripts/validator.min.js"></script>
@@ -120,10 +121,10 @@
                         </li>
                         <li class="<?=(in_array($_GET['page'], array("manage-giftcards", "giftcard", "giftcard-gallery")) ? "active" : "")?>">
                             <a href="index.php?page=manage-giftcards"><i class="fa fa-image"></i> <span>Giftcards</span></a>
-                        </li> 
+                        </li>
                         <li class="<?=(in_array($_GET['page'], array("manage-purchases")) ? "active" : "")?>">
                             <a href="index.php?page=manage-purchases"><i class="fa fa-shopping-cart"></i> <span>Giftcards purchased</span></a>
-                        </li> 
+                        </li>
                         <?}?>
 
                         <? $account = MyActiveRecord::FindFirst('account', array("id"=>$_SESSION['user']['id'])); ?>
@@ -171,11 +172,10 @@
                                 }
                             }
                         ?>
-                        
-                        
+
+
                     </ol>
                 </section>
 
                 <!-- Main content -->
                 <section class="content">
- 
