@@ -141,43 +141,38 @@
             </aside>
 
             <!-- Content Wrapper. Contains page content -->
-            <div id="main-content" class="content-wrapper">
+            <div id="main-content" class="content-wrapper p-5">
 
                 <!-- Content Header (Page header) -->
                 <section class="content-header">
 
                     <h1><?=$onpgtitle?></h1>
 
-                    <ol class="breadcrumb">
+					<?php
+					if( ! empty( $pagebreadcrumb ) ) {
+						?>
+						<ol class="breadcrumb mt-4">
+							<?php
+							?>
+							<li><a href="index.php?page=home"><i class="fas fa-fw fa-house-user"></i> Dashboard</a></li>
+							<?php
+							foreach( $pagebreadcrumb as $index => $page ) {
+								if( $index + 1 == count( $pagebreadcrumb ) ) {
+									?>
+									<li class="active"><span><?= $page[ 'page' ] ?></span></li>
+									<?php
+								} else {
+									?>
+									<li><a href="index.php?page=<?= $page[ 'url' ] ?>"><?= $page[ 'page' ] ?></a></li>
+									<?php
+								}
+							}
+							?>
+						</ol>
+						<?php
+					}
+					?>
 
-                        <?
-                            if(!empty($pagebreadcrumb))
-                            {
-                                $el_no = 0;
-                                ?>
-                                <li><a href="index.php?page=home"><i class="fa fa-dashboard"></i> Dashboard</a></li>
-                                <?
-                                foreach($pagebreadcrumb as $page)
-                                {
-                                    $el_no ++;
-                                    if($el_no == sizeof($pagebreadcrumb))
-                                    {
-                        ?>
-                                    <li class="active"><?=$page['page']?></li>
-                        <?
-                                    }
-                                    else
-                                    {
-                                    ?>
-                                    <li><a href="index.php?page=<?=$page['url']?>"><?=$page['page']?></a></li>
-                                    <?
-                                    }
-                                }
-                            }
-                        ?>
-
-
-                    </ol>
                 </section>
 
                 <!-- Main content -->
