@@ -1,11 +1,11 @@
-                    </section>    
+                    </section>
                     <!-- /.content -->
 
                 </div>
                 <!-- /.content-wrapper -->
 
-            <footer class="main-footer">
-                <strong>Copyright &copy; <?=date("Y")?>
+            <footer id="main-footer" class="main-footer">
+				<span>Copyright &copy; <?=date("Y")?></span>
             </footer>
 
         </div>
@@ -20,7 +20,7 @@
                 <h4 class="modal-title"></h4>
               </div>
               <div class="modal-body">
-                
+
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
@@ -35,31 +35,58 @@
 
         <script src="../code/scripts/alertify.js" type="text/javascript"></script>
         <script type="text/javascript">
-                
-            $(document).ready(function(){
 
-                $(document).on('click', '.open_help', function (evt) {
-                    evt.preventDefault();
-                    $("#modal-help").find('.modal-title').html($(".content_help_title").html());
-                    $("#modal-help").find('.modal-body').html($(".content_help_content").html());
-                    $("#modal-help").modal('show');
-                });
+			gsap.registerPlugin(ScrollTrigger);
 
-                <?
-                if(strlen($_SESSION['tempalert']) > 1){
-                ?>
-                    alertify.logPosition("bottom right");
-                    timer = setTimeout(function(){alertify.delay(10000).success('<?=$_SESSION['tempalert']?>');},500);
-                       
-                <?
-                    unset($_SESSION['tempalert']);
-                }
-                ?>
+			// Debounce window resize
+			var
+				resizeEnd = new Event('resize-end'),
+				resizeTimer,
+				resizeInterval = 150;
 
-            });
+			window.addEventListener('resize', function() {
+				clearTimeout(resizeTimer);
+				resizeTimer = setTimeout(function() {
+					window.dispatchEvent(resizeEnd);
+				}, resizeInterval);
+			});
+
+			// ScrollTrigger.matchMedia({
+			// 	'(min-width: 768px)': function() {
+			// 		ScrollTrigger.create({
+			// 			trigger: '#main-content',
+			// 			start: 'top top',
+			// 			pin: '#main-sidebar',
+			// 			pinSpacing: false,
+			// 			markers: true
+			// 		})
+			// 	}
+			// });
+
+			(function($) {
+
+				$(document).on('click', '.open_help', function (evt) {
+					evt.preventDefault();
+					$("#modal-help").find('.modal-title').html($(".content_help_title").html());
+					$("#modal-help").find('.modal-body').html($(".content_help_content").html());
+					$("#modal-help").modal('show');
+				});
+
+				<?
+				if(strlen($_SESSION['tempalert']) > 1){
+					?>
+					alertify.logPosition("bottom right");
+					timer = setTimeout(function(){alertify.delay(10000).success('<?=$_SESSION['tempalert']?>');},500);
+
+					<?
+					unset($_SESSION['tempalert']);
+				}
+				?>
+
+			})(jQuery);
 
         </script>
-       
-        
+
+
     </body>
 </html>

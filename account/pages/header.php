@@ -10,7 +10,8 @@
 
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
         <link rel="stylesheet" href="../code/bootstrap/dist/css/bootstrap.min.css">
-        <link rel="stylesheet" href="../code/font-awesome/css/font-awesome.min.css">
+        <!-- <link rel="stylesheet" href="../code/font-awesome/css/font-awesome.min.css"> -->
+        <link rel="stylesheet" href="../code/fontawesome-5/css/all.min.css?v=5.15.2">
         <link rel="stylesheet" href="../code/Ionicons/css/ionicons.min.css">
         <link rel="stylesheet" href="../code/jvectormap/jquery-jvectormap.css">
         <link rel="stylesheet" href="../code/datatables.net-bs/css/dataTables.bootstrap.min.css">
@@ -21,6 +22,8 @@
         <link rel="stylesheet" href="../code/bootstrap-datetimepicker/bootstrap-datetimepicker.min.css">
         <link rel="stylesheet" href="../code/css/dashboard.min.css">
 
+		<script src="../code/gsap/gsap.min.js?v=3.6.0"></script>
+		<script src="../code/gsap/ScrollTrigger.min.js?v=3.6.0"></script>
         <script src="../code/jquery/dist/jquery.min.js"></script>
         <script src="../code/bootstrap/dist/js/bootstrap.min.js"></script>
         <script src="../code/datatables.net/js/jquery.dataTables.min.js"></script>
@@ -51,22 +54,22 @@
 
     </head>
 
-    <body class="hold-transition skin-blue sidebar-mini">
+    <body class="hold-transition sidebar-mini">
 
         <div class="wrapper">
 
-            <header class="main-header">
+            <header id="main-header" class="main-header">
 
                 <!-- Logo -->
                 <a href="index.php?page=home" class="logo">
 
-                    <span class="logo-mini"><i class="fa fa-globe"></i></span>
-                    <span class="logo-lg" style="padding-top: 10px; padding-bottom: 10px;">
+                    <span class="logo-mini"><i class="fas fa-fw fa-globe"></i></span>
+                    <span class="logo-lg">
                     <?
                     if (account_globals::getvalue($_SESSION['user']['account_id'], "site_logo") != "")
                     {
                     ?>
-                        <img class="img-responsive center-block" src="<?="../assets/" . $_SESSION['user']['account_id'] . "/" . account_globals::getvalue($_SESSION['user']['account_id'], "site_logo")?>" alt="<?=account_globals::getvalue($_SESSION['user']['account_id'], "site_name")?>" style="max-height: 40px;" />
+                        <img class="img-responsive center-block" src="<?="../assets/" . $_SESSION['user']['account_id'] . "/" . account_globals::getvalue($_SESSION['user']['account_id'], "site_logo")?>" alt="<?=account_globals::getvalue($_SESSION['user']['account_id'], "site_name")?>">
                     <?
                         }
                         else
@@ -83,20 +86,17 @@
                 <!-- Header Navbar: style can be found in header.less -->
                 <nav class="navbar navbar-static-top">
 
-                    <!-- Sidebar toggle button-->
-                    <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
-                    <span class="sr-only">Toggle navigation</span>
-                    </a>
+					<button type="button" name="button" class="sidebar-toggle d-md-none" data-toggle="push-menu"><i class="fas fa-fw fa-caret-right"></i></button>
 
-                    <div class="navbar-custom-menu">
+                    <div class="navbar-custom-menu mr-2 mr-md-3">
                         <ul class="nav navbar-nav">
                             <?if($_SESSION['user']['admin'] == "on"){?>
                             <li>
-                                <a href="index.php?page=globals"><i class="fa fa-gears"></i> Settings</a>
+                                <a href="index.php?page=globals"><i class="fas fa-fw fa-sliders-h"></i> Settings</a>
                             </li>
                             <?}?>
                             <li>
-                                <a href="index.php?page=logout"><i class="fa fa-sign-out"></i> Logout</a>
+                                <a href="index.php?page=logout"><i class="fas fa-fw fa-sign-out-alt"></i> Logout</a>
                             </li>
                         </ul>
                     </div>
@@ -106,39 +106,42 @@
             </header>
 
             <!-- Left side column. contains the logo and sidebar -->
-            <aside class="main-sidebar">
+            <aside id="main-sidebar" class="main-sidebar">
                 <!-- sidebar: style can be found in sidebar.less -->
-                <section class="sidebar">
+                <section class="sidebar p-2">
                     <!-- sidebar menu: : style can be found in sidebar.less -->
-                    <ul class="sidebar-menu" data-widget="tree">
+                    <ul class="sidebar-menu py-4" data-widget="tree">
 
                         <li class="<?=(in_array($_GET['page'], array("home")) ? "active" : "")?>">
-                            <a href="index.php?page=home"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a>
+                            <a href="index.php?page=home"><i class="fas fa-fw fa-house-user"></i> <span>Dashboard</span></a>
                         </li>
                         <?if($_SESSION['user']['admin'] == "on"){?>
                         <li class="<?=(in_array($_GET['page'], array("manage-users", "user")) ? "active" : "")?>">
-                            <a href="index.php?page=manage-users"><i class="fa fa-users"></i> <span>Users</span></a>
+                            <a href="index.php?page=manage-users"><i class="fas fa-fw fa-user-friends"></i> <span>Users</span></a>
                         </li>
                         <li class="<?=(in_array($_GET['page'], array("manage-giftcards", "giftcard", "giftcard-gallery")) ? "active" : "")?>">
-                            <a href="index.php?page=manage-giftcards"><i class="fa fa-image"></i> <span>Giftcards</span></a>
+                            <a href="index.php?page=manage-giftcards"><i class="fas fa-fw fa-gift"></i> <span>Giftcards</span></a>
                         </li>
                         <li class="<?=(in_array($_GET['page'], array("manage-purchases")) ? "active" : "")?>">
-                            <a href="index.php?page=manage-purchases"><i class="fa fa-shopping-cart"></i> <span>Giftcards purchased</span></a>
+                            <a href="index.php?page=manage-purchases"><i class="fas fa-fw fa-shopping-cart"></i> <span>Giftcards purchased</span></a>
                         </li>
                         <?}?>
 
                         <? $account = MyActiveRecord::FindFirst('account', array("id"=>$_SESSION['user']['id'])); ?>
                         <li class="">
-                            <a href="<?=BASE_PATH . $account->name . "/send-giftcard"?>" target="_blank"><i class="fa fa-desktop" aria-hidden="true"></i> <span>Landing page</span></a>
+                            <a href="<?=BASE_PATH . $account->name . "/send-giftcard"?>" target="_blank"><i class="fas fa-fw fa-laptop-house"></i> <span>Landing page</span></a>
                         </li>
 
                     </ul>
+
+					<button type="button" name="button" class="sidebar-toggle d-none d-md-inline-block w-100" data-toggle="push-menu"><i class="fas fa-fw fa-caret-left"></i></button>
+
                 </section>
                 <!-- /.sidebar -->
             </aside>
 
             <!-- Content Wrapper. Contains page content -->
-            <div class="content-wrapper">
+            <div id="main-content" class="content-wrapper">
 
                 <!-- Content Header (Page header) -->
                 <section class="content-header">
