@@ -53,13 +53,6 @@
 
 			(function($) {
 
-				$(document).on('click', '.open_help', function (evt) {
-					evt.preventDefault();
-					$("#modal-help").find('.modal-title').html($(".content_help_title").html());
-					$("#modal-help").find('.modal-body').html($(".content_help_content").html());
-					$("#modal-help").modal('show');
-				});
-
 				<?
 				if(strlen($_SESSION['tempalert']) > 1){
 					?>

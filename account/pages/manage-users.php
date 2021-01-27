@@ -3,25 +3,25 @@
 
 <div class="row">
 	<div class="col-xs-12">
-		<div class="box box-primary">
 
-			<div class="box-header">
-				<a href="index.php?page=user" class="btn btn-primary btn-warning pull-right">Add User</a>
-				<h3 class="box-title">List Users <a href="#" class="open_help" title="Click for help"><i class="fas fa-question-circle"></i></a></h3>
+		<div class="whitebox box-secondary shadow-medium border-left-secondary">
+			<div class="whitebox-title d-flex align-items-center">
+				<h4 class="flex-1">
+					<span class="valign-middle">List Users</span>
+					<a href="#" class="valign-middle p-2" title="This view manages the users that will use this interface on your behalf. Admin users have full access to manage all components." data-toggle="tooltip"><i class="fas fa-fw fa-question-circle"></i></a>
+				</h4>
+				<a href="index.php?page=user" class="btn btn-primary btn-sm btn-split"><i class="fas fa-fw fa-user-plus"></i> Add User</a>
 			</div>
 
-			<div class="content_help hide"><div class="content_help_title">Manage Users</div><div class="content_help_content">Define a list of users that will use this interface on your behalf. Admin users have full access to manage all components.</div></div>
-
-            <div class="box-body">
-
+			<div class="whitebox-content">
 				<table class="table" id="table-users">
 					<thead>
 						<tr>
 							<th>
-								<div class="pretty p-icon p-smooth">
-							        <input type="checkbox" id="select-all" />
+								<input type="checkbox" id="select-all">
+								<!-- <div class="pretty p-icon p-smooth">
 							        <div class="state p-primary"><i class="icon fa fa-check"></i><label></label></div>
-							    </div>
+							    </div> -->
 							</th>
 							<th>#</th>
 							<th>Name</th>
@@ -39,10 +39,10 @@
 						?>
 						<tr>
 							<td>
-								<div class="pretty p-icon p-smooth">
-							        <input type="checkbox" class="select-row" value="<?=$item->id?>" />
+								<input type="checkbox" id="select-row-<?= $item->id ?>" class="select-row" value="<?= $item->id ?>">
+								<!-- <div class="pretty p-icon p-smooth">
 							        <div class="state p-default"><i class="icon fa fa-check"></i><label></label></div>
-							    </div>
+							    </div> -->
 							</td>
 							<td style="white-space: nowrap;"><?=$item->id?></td>
 							<td><strong><?=$item->name?></strong></td>
@@ -74,9 +74,9 @@
 						</tr>
 					</tfoot>
 				</table>
-
 			</div>
 		</div>
+
 	</div>
 </div>
 
@@ -85,6 +85,14 @@
 <script type="text/javascript">
 
 	$(document).ready(function() {
+
+		$('[data-toggle="tooltip"]').tooltip({
+			placement: 'right',
+			trigger: 'click hover focus'
+		});
+		$('[data-toggle="tooltip"]').on('click', function(e) {
+			e.preventDefault();
+		});
 
 		// Toggle status action
 		$('.toggle-status').change(function() {
@@ -133,6 +141,10 @@
 			],
 			"filter": true,
 			"order": [[1, "asc"]],
+			'drawCallback': function() {
+				pretty_select();
+				pretty_checkbox();
+			}
 		});
 
 		$("#select-all").on('click',function() {
