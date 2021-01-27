@@ -51,18 +51,6 @@
 				}, resizeInterval);
 			});
 
-			// ScrollTrigger.matchMedia({
-			// 	'(min-width: 768px)': function() {
-			// 		ScrollTrigger.create({
-			// 			trigger: '#main-content',
-			// 			start: 'top top',
-			// 			pin: '#main-sidebar',
-			// 			pinSpacing: false,
-			// 			markers: true
-			// 		})
-			// 	}
-			// });
-
 			(function($) {
 
 				$(document).on('click', '.open_help', function (evt) {

@@ -1,59 +1,63 @@
 <div class="row">
 	<div class="col-xs-12">
-		<div class="box box-primary">
 
-			<div class="box-header">
-				<h3 class="box-title">System stats</h3>
-			</div>
+		<div class="whitebox box-secondary shadow-medium">
+			<h4 class="whitebox-title">System Stats</h4>
+			<div class="whitebox-content">
+				<div class="row">
 
-            <div class="box-body">	
+					<?php
+					if( $_SESSION[ 'user' ][ 'admin' ] == 'on' ) {
+						?>
 
-	            <div class="row">
-
-					<?if($_SESSION['user']['admin'] == "on"){?>
-
-					<div class="col-lg-3 col-xs-6">
-						<div class="small-box bg-green">
-							<div class="inner">
-								<h3><?=$count_giftcards?></h3>
-								<p>Active Giftcards</p>
+						<div class="col col-xs-6 col-sm-12 col-md-6">
+							<div class="card card-primary shadow-medium shadow-hover-large border-left-primary border-radius-0">
+								<div class="card-header bg-transparent text-uppercase text-small text-strong">
+									Active Giftcards
+								</div>
+								<div class="card-body pt-0">
+									<div class="card-lead">
+										<span class="lead"><?= $count_giftcards ?></span>
+										<span>Active giftcards</span>
+										<div class="card-icon">
+											<i class="fas fa-fw fa-gift"></i>
+										</div>
+									</div>
+									<div class="text-right mt-4">
+										<a href="index.php?page=manage-giftcards" class="btn btn-primary btn-sm text-uppercase d-block d-xl-inline-block">More info <i class="fas fa-fw fa-arrow-right"></i></a>
+									</div>
+								</div>
 							</div>
-							<div class="icon">
-								<i class="fa fa-image"></i>
-							</div>
-							<a href="index.php?page=manage-giftcards" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
 						</div>
-					</div>	
 
-					<div class="col-lg-3 col-xs-6">
-						<div class="small-box bg-yellow">
-							<div class="inner">
-								<h3><?=$count_purchases?></h3>
-								<p>Giftcards purchased</p>
+						<div class="col col-xs-6 mt-5 mt-sm-0 col-sm-12 mt-md-5 col-md-6 mt-lg-0">
+							<div class="card card-success shadow-medium shadow-hover-large border-left-success border-radius-0">
+								<div class="card-header bg-transparent text-uppercase text-small text-strong">
+									Purchased Giftcards
+								</div>
+								<div class="card-body pt-0">
+									<div class="card-lead">
+										<span class="lead"><?= $count_purchases ?></span>
+										<span>Purchased giftcards</span>
+										<div class="card-icon">
+											<i class="fas fa-fw fa-shopping-cart"></i>
+										</div>
+									</div>
+									<div class="text-right mt-4">
+										<a href="index.php?page=manage-purchases" class="btn btn-success btn-sm text-uppercase d-block d-xl-inline-block">More info <i class="fas fa-fw fa-arrow-right"></i></a>
+									</div>
+								</div>
 							</div>
-							<div class="icon">
-								<i class="fa fa-shopping-cart"></i>
-							</div>
-							<a href="index.php?page=manage-purchases" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
 						</div>
-					</div>							
-					<?}?>			
+
+						<?php
+					}
+					?>
 
 				</div>
-			</div>
 
+			</div>
 		</div>
 
-		
     </div>
 </div>
-
-<script type="text/javascript">
-
-	$(document).ready(function() {
-
-		
-
-    });
-
-</script>

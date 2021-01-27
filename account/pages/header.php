@@ -141,13 +141,11 @@
             </aside>
 
             <!-- Content Wrapper. Contains page content -->
-            <div id="main-content" class="content-wrapper p-5">
+            <div id="main-content" class="content-wrapper py-5 px-4 px-md-5">
 
                 <!-- Content Header (Page header) -->
                 <section class="content-header">
-
                     <h1><?=$onpgtitle?></h1>
-
 					<?php
 					if( ! empty( $pagebreadcrumb ) ) {
 						?>
@@ -172,8 +170,7 @@
 						<?php
 					}
 					?>
-
                 </section>
 
                 <!-- Main content -->
-                <section class="content">
+                <section class="content mt-5">
