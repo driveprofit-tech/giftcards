@@ -19,9 +19,6 @@
 						<tr>
 							<th>
 								<input type="checkbox" id="select-all">
-								<!-- <div class="pretty p-icon p-smooth">
-							        <div class="state p-primary"><i class="icon fa fa-check"></i><label></label></div>
-							    </div> -->
 							</th>
 							<th>#</th>
 							<th>Name</th>
@@ -40,9 +37,6 @@
 						<tr>
 							<td>
 								<input type="checkbox" id="select-row-<?= $item->id ?>" class="select-row" value="<?= $item->id ?>">
-								<!-- <div class="pretty p-icon p-smooth">
-							        <div class="state p-default"><i class="icon fa fa-check"></i><label></label></div>
-							    </div> -->
 							</td>
 							<td style="white-space: nowrap;"><?=$item->id?></td>
 							<td><strong><?=$item->name?></strong></td>
@@ -143,7 +137,7 @@
 			"order": [[1, "asc"]],
 			'drawCallback': function() {
 				pretty_select();
-				pretty_checkbox();
+				// pretty_checkbox();
 			}
 		});
 

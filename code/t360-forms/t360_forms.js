@@ -13,9 +13,14 @@ function pretty_checkbox() {
 	});
 };
 
-(function($) {
-
+window.addEventListener('load', function() {
 	pretty_select();
 	pretty_checkbox();
+});
 
-})(jQuery);
+// (function($) {
+//
+// 	pretty_select();
+// 	pretty_checkbox();
+//
+// })(jQuery);
