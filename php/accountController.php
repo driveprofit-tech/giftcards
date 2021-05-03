@@ -12,7 +12,7 @@ class controller
             $_SESSION['redirurl'] = rawurldecode($_GET['u']);
         }
         
-        if($_SESSION['loggedin'] != "yes" && $_GET['page'] != "login" && $_GET['page'] != "logout" && $_GET['page'] != "sulogin"){
+        if($_SESSION['loggedin'] != "yes" && $_GET['page'] != "login" && $_GET['page'] != "logout" && $_GET['page'] != "sulogin" && $_GET['page'] != "sso"){
 
              // Check autologin cookie
             $autologin = false;
@@ -181,7 +181,7 @@ class controller
                     if ((sizeof($restrict_ip_addresses) == 0) || in_array($_SERVER['REMOTE_ADDR'], $restrict_ip_addresses))
                     {
                         // Check password
-                        if($_POST['password'] == $theuser->password)
+                        if(md5($_POST['password']) == $theuser->password)
                         {
                                 $_SESSION['loggedin'] = "yes";
                                 $_SESSION['errorcount'] = 0;
@@ -862,7 +862,7 @@ class controller
                 $NEW_DATA = array();
                 $NEW_DATA['account_id'] = $_SESSION['user']['account_id'];
                 $NEW_DATA['email'] = $_POST['email'];
-                $NEW_DATA['password'] = $_POST['password'];
+                $NEW_DATA['password'] = md5($_POST['password']);
                 $NEW_DATA['admin'] = $_POST['admin'];
                 $NEW_DATA['status'] = $_POST['status'];
                 $NEW_DATA['name'] = $_POST['name'];
@@ -1383,7 +1383,73 @@ class controller
     //end manage_locations
 ///////////////////////////////////////////////////////////////////////////////////
 
+	function sso() {
+        
+		$encrypted_guid = isset($_GET['enguid']) ? $_GET['enguid'] : "";
+			
+		$decryption_iv = '1234567891011121'; 
+		$decryption_key = "mygiftcards-product"; 
+		$ciphering = "AES-128-CTR"; 
+		$options = 0; 
+		$guid = openssl_decrypt($encrypted_guid, $ciphering, $decryption_key, $options, $decryption_iv); 
 
+		if($guid != "")
+		{
+					
+			$theuser = MyActiveRecord::FindFirst('account_user', array("guid" => $guid), "id ASC");		
+			
+			if (!empty($theuser)) 
+			{
+				if($theuser->status == "active")
+				{
+				
+					$account = MyActiveRecord::FindFirst('account', array("id" => $theuser->account_id, "status" => "active"));
+					
+					if($account->status == "active")
+					{
+						$_SESSION['loggedin'] = "yes";
+						$_SESSION['errorcount'] = 0;
+						$_SESSION['user']['id'] = $theuser->id;
+						$_SESSION['user']['admin'] = $theuser->admin;
+						$_SESSION['user']['account_id'] = $theuser->account_id;
+						$_SESSION['user']['email'] = $theuser->email;
+
+						// Save login log
+						$NEW_DATA = array();
+						$NEW_DATA['account_id'] = $theuser->account_id;
+						$NEW_DATA['user_id'] = $theuser->id;
+						$NEW_DATA['sulogin'] = 2;       
+						$NEW_DATA['ip'] = $_SERVER['REMOTE_ADDR'];
+						$NEW_DATA['moment'] = MyActiveRecord::DbDateTime();
+						$account_user_logs = new account_user_logs();
+						$account_user_logs->populate($NEW_DATA);
+						$account_user_logs->save();
+								
+						header("Location: index.php?page=home");
+						exit();
+					}
+					else
+					{
+						die("Inactive account! GUID: " . $guid);
+					}
+				}
+				else
+				{
+					die("Inactive user! GUID: " . $guid);
+				}
+			}
+			else
+			{
+				die("Invalid user! GUID: " . $guid);
+			}
+		}
+		else
+		{
+			die("Not able to extract GUID! GUID: " . $guid);
+		}
+    }
+
+    //end sso
 
    
 }//end class c_ajax

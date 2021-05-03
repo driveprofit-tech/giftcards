@@ -374,7 +374,7 @@ class controller
                         $NEW_USER_DATA = array();  
                         $NEW_USER_DATA['account_id'] = $account->id;
                         $NEW_USER_DATA['email'] = $_POST['email'];
-                        $NEW_USER_DATA['password'] = $_POST['password'];
+                        $NEW_USER_DATA['password'] = md5($_POST['password']);
                         $NEW_USER_DATA['admin'] = "on";
                         $NEW_USER_DATA['name'] = $_POST['user_name'];
                         $NEW_USER_DATA['status'] = "active";

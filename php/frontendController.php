@@ -535,6 +535,200 @@ class controller
     }//end payment_confirm
 
     /////////////////////////////////
+	
+	function api(){
+		
+		ini_set('display_errors', 0);
+		
+		$input_data = file_get_contents('php://input');
+		$headers = getallheaders();
+		
+		$success = 0;
+		$user_id = 0;
+		$err = array();
+		
+		$post_data = json_decode($input_data, 1);
+		
+		if((isset($headers['Apikey']) || isset($headers['ApiKey'])) && ($headers['Apikey'] == "8b55a9946a2837a449720b4747eb40f2" || $headers['ApiKey'] == "8b55a9946a2837a449720b4747eb40f2"))
+		{
+			if (is_array($post_data) && sizeof($post_data) > 2) 
+			{
+
+				$post_data['site_link'] = str_replace('https://', '', $post_data['site_link']);
+				$post_data['site_link'] = str_replace('http://', '', $post_data['site_link']);
+				$post_data['site_link'] = 'https://' . $post_data['site_link'];
+				if (!filter_var($post_data['site_link'], FILTER_VALIDATE_URL))
+				{
+					$err['site_link'] = "Not a valid URL";
+				}
+
+				if (strlen(trim($post_data['site_name'])) < 4)
+				{
+					$err['site_name'] = "Not valid (min. 4 chars)";
+				}
+
+				if (strlen(trim($post_data['name'])) < 4)
+				{
+					$err['name'] = "Not valid (min. 4 chars)";
+				}
+
+				if (strlen(trim($post_data['user_name'])) < 4)
+				{
+					$err['user_name'] = "Not valid (min. 4 chars)";
+				}
+
+				if (!preg_match('/^[a-zA-Z0-9]+[a-zA-Z0-9\-]+$/', $post_data['name']))
+				{
+					$err['name'] = "Not valid (not alphanumeric or dahes)";
+				}
+
+				if (!filter_var($post_data['email'], FILTER_VALIDATE_EMAIL))
+				{
+					$err['email'] = "Not valid";
+				}
+
+				if (strlen(trim($post_data['password'])) < 4)
+				{
+					$err['password'] = "Password not valid";
+				}
+
+				if (count($err) == 0) 
+				{
+					$account = MyActiveRecord::FindFirst('account', array("name" => $post_data['name']));
+					if (!empty($account->id))
+					{
+						$err['name'] = "Account identifier already in use";
+					}
+					$user = MyActiveRecord::FindFirst('account_user', array("email" => $post_data['email']));
+					if (!empty($user->id))
+					{
+						$err['email'] = "Account already created with this email";
+					}
+				}
+
+				if (count($err) == 0) 
+				{
+					$NEW_DATA = array();
+					$NEW_DATA['name'] = $post_data['name'];
+					$NEW_DATA['status'] = 'active';				   
+					$account = new account();
+					$account->populate($NEW_DATA);
+					$account->save();
+					
+					if ($account->id > 0) 
+					{
+						$NEW_USER_DATA = array();  
+                        $NEW_USER_DATA['account_id'] = $account->id;
+                        $NEW_USER_DATA['email'] = $post_data['email'];
+                        $NEW_USER_DATA['password'] = md5($post_data['password']);
+                        $NEW_USER_DATA['admin'] = "on";
+                        $NEW_USER_DATA['name'] = $post_data['user_name'];
+                        $NEW_USER_DATA['status'] = "active";
+						$NEW_USER_DATA['guid'] = $post_data['guid'];
+                        $account_user = new account_user();
+                        $account_user->populate($NEW_USER_DATA);
+                        $account_user->save();
+						
+						$user_id = $account_user->id;
+						
+						$settings_data['site_name'] = $post_data['site_name'];
+						$settings_data['site_link'] = $post_data['site_link'];
+						foreach (array("site_name", "site_link") as $setting)
+						{
+							$account_globals = new account_globals();
+							$account_globals->populate(array("account_id" => $account->id, "name" => $setting, "value" => (isset($settings_data[$setting]) ? $settings_data[$setting] : "")));
+							$account_globals->save();
+						}
+
+						// Create account folder
+						mkdir(LOCAL_PATH . "assets/" . $account->id);
+					   
+						$mail = new PHPMailer();
+						$mail->IsSMTP();
+						$mail->SMTPAuth = true;
+						$mail->Host = "smtp.sparkpostmail.com";
+						$mail->Port = 587;
+						$mail->Username = "SMTP_Injection";
+						$mail->Password = "40bd0907da14303b533f9f229d8317ac117d3533";
+						$mail->SetFrom('support@tech360group.com', "Giftcards team");
+
+						// Send admin email
+						$mail->Subject = 'New account on ' . BASE_PATH;
+
+						$body = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+							<html xmlns="http://www.w3.org/1999/xhtml">
+							<head>
+								<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+								<title>New account</title>
+							</head>
+							<body>
+								<table border="0" cellspacing="0" cellpadding="5" width="640" style="width:640px; margin:0 auto;">
+									<!--
+									<tr>
+									  <td style="text-align:center; background:#fff; height:80px;">
+										<a style="color:#012C6B;" href="https://review.limo/admin" title="Review System"><img src="' . BASE_PATH . '/assets/dp-email.png" alt="Review System" title="Review System" /></a>
+									  </td>
+									</tr>
+									-->
+									<tr>
+									  <td style="padding:20px; text-align:center; font-size:14px; font-family:Verdana, Geneva, sans-serif;">';
+						$body .= "<table style=\"border: 1px solid black; border-collapse: collapse;\" width=\"900px;\">";
+						$body .= "
+									<tr>
+									<td style=\"background-color: #CCCCCC; border: 1px solid black;\" width=\"40%\">Company Name</td>
+									<td width=\"60%\" style=\"border: 1px solid black;\"> " . $post_data['site_name'] . "</td>
+									</tr>";
+						$body .= "
+									<tr>
+									<td style=\"background-color: #CCCCCC; border: 1px solid black;\" width=\"40%\">Company Website</td>
+									<td width=\"60%\" style=\"border: 1px solid black;\"> " . $post_data['site_link'] . "</td>
+									</tr>";
+						$body .= "
+									<tr>
+									<td style=\"background-color: #CCCCCC; border: 1px solid black;\" width=\"40%\">Unique Account Identifier</td>
+									<td width=\"60%\" style=\"border: 1px solid black;\"> " . $post_data['name'] . "</td>
+									</tr>";
+						$body .= "
+									<tr>
+									<td style=\"background-color: #CCCCCC; border: 1px solid black;\" width=\"40%\">Contact Name</td>
+									<td width=\"60%\" style=\"border: 1px solid black;\"> " . $post_data['user_name'] . "</td>
+									</tr>";
+						$body .= "
+									<tr>
+									<td style=\"background-color: #CCCCCC; border: 1px solid black;\" width=\"40%\">Email address</td>
+									<td width=\"60%\" style=\"border: 1px solid black;\"> " . $post_data['email'] . "</td>
+									</tr>";
+						$body .= "</table>";
+						$body .= "</td>
+								</tr>
+							</table>
+
+						</body>
+						</html>";
+						
+						$mail->AltBody = 'Please use a HTML compatible email client to read this message!';
+						$mail->MsgHTML($body);
+						
+						$mail->ClearAllRecipients();
+						$mail->AddAddress(globals::getvalue("admin_email"), 'DP Tech team');
+
+						$mail->Send();
+						
+						$success = 1;
+					}
+				}
+			}
+		}
+		else
+		{
+			$err['auth'] = "Invalid AUTH key";
+		}
+		
+		echo json_encode(array("success"=>$success, "err"=>$err));
+		
+	}
+
+///////////////////////////////////////////////////////////////////////////////////
 
     function error404(){
 
