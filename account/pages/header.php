@@ -35,7 +35,7 @@
         <script src="../code/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
         <script src="../code/scripts/moment.min.js"></script>
         <script src="../code/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js"></script>
-		<script src="../code/t360-forms/t360_forms.js"></script>
+		<!-- <script src="../code/t360-forms/t360_forms.js"></script> -->
 
 
         <!-- Vaildator -->

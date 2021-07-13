@@ -5,10 +5,11 @@
 	<div class="col-xs-12">
 
 		<div class="whitebox box-secondary shadow-medium border-left-secondary">
+
 			<div class="whitebox-title d-flex align-items-center">
 				<h4 class="flex-1">
 					<span class="valign-middle">List Users</span>
-					<a href="#" class="valign-middle p-2" title="This view manages the users that will use this interface on your behalf. Admin users have full access to manage all components." data-toggle="tooltip"><i class="fas fa-fw fa-question-circle"></i></a>
+					<span class="valign-middle p-2 helper" title="This view manages the users that will use this interface on your behalf. Admin users have full access to manage all components." data-toggle="tooltip"><i class="fas fa-fw fa-question-circle"></i></span>
 				</h4>
 				<a href="index.php?page=user" class="btn btn-primary btn-sm btn-split"><i class="fas fa-fw fa-user-plus"></i> Add User</a>
 			</div>
@@ -44,8 +45,8 @@
 							<td><?=($item->admin == "on" ? "<strong>Admin</strong>" : "Basic")?></td>
 							<td><input type="checkbox" <?=($item->status == "active" ? "checked" : "")?> data-toggle="toggle" class="toggle-status" data-on="Active" data-onstyle="success" data-off="Inactive" data-size="mini" id="status_<?=$item->id?>" data-status="<?=$item->status?>"></td>
 							<td class="text-right" style="white-space: nowrap;">
-								<a href="index.php?page=user&id=<?=$item->id?>" title="edit" class="btn btn-primary btn-sm"><i class="fa fa-pencil" aria-hidden="true"></i></a>
-								<a href="index.php?page=manage-users&delete=<?=$item->id?>" onclick="return confirm('Are you sure you want to delete the user?');" title="delete" class="btn btn-danger btn-sm"><i class="fa fa-trash" aria-hidden="true"></i></a>
+								<a href="index.php?page=user&id=<?=$item->id?>" title="Edit user" class="btn btn-primary btn-square btn-inverted" data-toggle="tooltip"><i class="fas fa-fw fa-user-edit"></i></a>
+								<a href="index.php?page=manage-users&delete=<?=$item->id?>" onclick="return confirm('Are you sure you want to delete the user?');" title="Delete user" class="btn btn-danger btn-square btn-inverted" data-toggle="tooltip"><i class="far fa-fw fa-trash-alt"></i></a>
 							</td>
 						</tr>
 						<?
@@ -57,11 +58,11 @@
 							<th colspan="7">
 								<div class="dropdown">
 								  	<button class="btn btn-default dropdown-toggle btn-sm" type="button" id="dropdownActions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Apply action to selected <span class="caret"></span></button>
-								  	<ul class="dropdown-menu" aria-labelledby="dropdownActions">
-								  		<li><a href="#" id="activateAction" class="doAction"><i class="fa fa-check" aria-hidden="true"></i> Activate selected</a></li>
-								  		<li><a href="#" id="deactivateAction" class="doAction"><i class="fa fa-ban" aria-hidden="true"></i> Deactivate selected</a></li>
+								  	<ul class="dropdown-menu border-radius-2 shadow-large" aria-labelledby="dropdownActions">
+								  		<li><a href="#" id="activateAction" class="doAction"><i class="fas fa-fw fa-check text-success"></i> Activate selected</a></li>
+								  		<li><a href="#" id="deactivateAction" class="doAction"><i class="fas fa-fw fa-ban text-warning"></i> Deactivate selected</a></li>
 								  		<li class="divider"></li>
-										<li><a href="#" id="deleteAction" class="doAction"><i class="fa fa-trash" aria-hidden="true"></i> Delete selected</a></li>
+										<li><a href="#" id="deleteAction" class="doAction"><i class="far fa-fw fa-trash-alt text-danger"></i> Delete selected</a></li>
 							  		</ul>
 								</div>
 							</th>
@@ -69,6 +70,7 @@
 					</tfoot>
 				</table>
 			</div>
+
 		</div>
 
 	</div>
@@ -79,14 +81,6 @@
 <script type="text/javascript">
 
 	$(document).ready(function() {
-
-		$('[data-toggle="tooltip"]').tooltip({
-			placement: 'right',
-			trigger: 'click hover focus'
-		});
-		$('[data-toggle="tooltip"]').on('click', function(e) {
-			e.preventDefault();
-		});
 
 		// Toggle status action
 		$('.toggle-status').change(function() {
@@ -136,7 +130,7 @@
 			"filter": true,
 			"order": [[1, "asc"]],
 			'drawCallback': function() {
-				pretty_select();
+				// pretty_select();
 				// pretty_checkbox();
 			}
 		});

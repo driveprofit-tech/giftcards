@@ -53,6 +53,8 @@
 
 			(function($) {
 
+				$('[data-toggle="tooltip"]').tooltip();
+
 				<?
 				if(strlen($_SESSION['tempalert']) > 1){
 					?>
