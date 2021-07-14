@@ -55,6 +55,31 @@
 
 				$('[data-toggle="tooltip"]').tooltip();
 
+				// File input
+				$('input[type="file"]').each(function() {
+
+					var $input = $(this),
+						$label = $input.next('div').find('label');
+
+					// Manage .focus class on label element
+					$input.on('focus', function() {
+						$label.addClass('focus');
+					});
+					$input.on('blur', function() {
+						$label.removeClass('focus');
+					});
+					$label.on('click', function() {
+						$label.addClass('focus');
+					});
+
+					$input.on('change', function() {
+						if(this.files.length == 1) {
+							$label.find('span').text(this.files[0].name);
+						};
+					});
+
+				});
+
 				<?
 				if(strlen($_SESSION['tempalert']) > 1){
 					?>
