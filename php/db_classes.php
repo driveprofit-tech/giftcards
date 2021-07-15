@@ -36,7 +36,7 @@
 					{
 						if ($field == "client")
 						{
-							$add_cond_where[] = "(code LIKE " . MyActiveRecord::Escape("%" . $val . "%") . " OR receiver_name LIKE " . MyActiveRecord::Escape("%" . $val . "%") . " OR receiver_email LIKE " . MyActiveRecord::Escape("%" . $val . "%") . ")";
+							$add_cond_where[] = "(receiver_code LIKE " . MyActiveRecord::Escape("%" . $val . "%") . " OR receiver_name LIKE " . MyActiveRecord::Escape("%" . $val . "%") . " OR receiver_email LIKE " . MyActiveRecord::Escape("%" . $val . "%") . ")";
 						}
 						elseif ($field == "account_giftcard_id")
 						{
@@ -56,15 +56,15 @@
 						}
 						elseif ($field == "added_on")
 						{
-							$start_interval = $end_interval = "";
+							$start_interval = $end_interval = null;
 							$daterangepicker_data = explode("-", $val);
-							$start_interval = trim($daterangepicker_data[0]);
-				            $end_interval = trim($daterangepicker_data[1]);
-				            if ($start_interval != "") {
-				                $add_cond_where[] = "DATE_FORMAT(added_on, '%Y-%m-%d') >= '" . date_format(date_create_from_format('m/d/Y', $start_interval), 'Y-m-d') . "'";
+							$start_interval = isset($daterangepicker_data[0]) ? date_create_from_format('m/d/Y', trim($daterangepicker_data[0])) : $start_interval;
+				            $end_interval = isset($daterangepicker_data[1]) ? date_create_from_format('m/d/Y', trim($daterangepicker_data[1])) : $end_interval;
+				            if ($start_interval) {
+				                $add_cond_where[] = "DATE_FORMAT(added_on, '%Y-%m-%d') >= '" . date_format($start_interval, 'Y-m-d') . "'";
 				            }
-				            if ($end_interval != "") {
-				                $add_cond_where[] = "DATE_FORMAT(added_on, '%Y-%m-%d') <= '" . date_format(date_create_from_format('m/d/Y', $end_interval), 'Y-m-d') . "'";
+				            if ($end_interval) {
+				                $add_cond_where[] = "DATE_FORMAT(added_on, '%Y-%m-%d') <= '" . date_format($end_interval, 'Y-m-d') . "'";
 				            }
 						}
 						else
@@ -75,7 +75,7 @@
 				}
 				if (sizeof($add_cond_where) > 0)
 				{
-					$add_cond[] = "((" . join(") AND (", $add_cond_where) . "))";
+					$add_cond[] = "((" . join(") OR (", $add_cond_where) . "))";
 				}
 			}
 			
@@ -135,6 +135,7 @@
 
 			// Get the records
 			$full_query_all = self::build_query($params);
+			//die($full_query_all);
 			$items = MyActiveRecord::FindBySql("account_purchase", $full_query_all);
 
 			// Process records	

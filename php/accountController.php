@@ -1285,7 +1285,7 @@ class controller
 
             // Set title and conditions depending on selection
             if (isset($_GET['client']) && ($_GET['client'] != "")) {
-                $ADD_COND[] = "(code LIKE " . MyActiveRecord::Escape("%" . $_GET['client'] . "%") . " OR receiver_name LIKE " . MyActiveRecord::Escape("%" . $_GET['client'] . "%") . " OR receiver_email LIKE " . MyActiveRecord::Escape("%" . $_GET['client'] . "%") . ")";
+                $ADD_COND[] = "(receiver_code LIKE " . MyActiveRecord::Escape("%" . $_GET['client'] . "%") . " OR receiver_name LIKE " . MyActiveRecord::Escape("%" . $_GET['client'] . "%") . " OR receiver_email LIKE " . MyActiveRecord::Escape("%" . $_GET['client'] . "%") . ")";
             }
             if (isset($_GET['account_giftcard_id']) && ($_GET['account_giftcard_id'] > 0)) {
                 $ADD_COND[] = "account_giftcard_id = " . MyActiveRecord::Escape($_GET['account_giftcard_id']);

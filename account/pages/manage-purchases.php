@@ -138,7 +138,7 @@
 			"columns": [	
 				{"name": "id", "orderable": true, "searchable": false, "sClass": "custom-header", "width": "1%"},
 				{"name": "account_giftcard_id", "orderable": false, "searchable": true, "sClass": "custom-header", "width": "15%"},
-				{"name": "receiver", "orderable": false, "searchable": true, "sClass": "custom-header", "width": "15%"},	
+				{"name": "client", "orderable": false, "searchable": true, "sClass": "custom-header", "width": "15%"},	
 				{"name": "price_total", "orderable": true, "searchable": false, "sClass": "custom-header", "width": "10%"},	
 				{"name": "payment_status", "orderable": true, "searchable": true, "sClass": "custom-header", "width": "10%"},
 				{"name": "sent_status", "orderable": false, "searchable": true, "sClass": "custom-header", "width": "10%"},
