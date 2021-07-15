@@ -6,12 +6,14 @@
 
 		<div class="whitebox box-secondary shadow-medium border-left-secondary">
 
-			<div class="whitebox-title d-flex align-items-center">
-				<h4 class="flex-1">
+			<div class="whitebox-title d-lg-flex align-items-center">
+				<h4>
 					<span class="valign-middle">List Users</span>
 					<span class="valign-middle p-2 helper" title="This view manages the users that will use this interface on your behalf. Admin users have full access to manage all components." data-toggle="tooltip"><i class="fas fa-fw fa-question-circle"></i></span>
 				</h4>
-				<a href="index.php?page=user" class="btn btn-primary btn-sm btn-split"><i class="fas fa-fw fa-user-plus"></i> Add User</a>
+				<div class="flex-grow-1 text-lg-right mt-3 mt-lg-0">
+					<a href="index.php?page=user" class="btn btn-primary btn-sm btn-split" title="Add a new user" data-toggle="tooltip"><i class="fas fa-fw fa-user-plus"></i> Add User</a>
+				</div>
 			</div>
 
 			<div class="whitebox-content">

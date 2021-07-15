@@ -81,13 +81,18 @@
 				});
 
 				<?
-				if(strlen($_SESSION['tempalert']) > 1){
+				if( strlen( $_SESSION[ 'tempalert' ] ) > 1 ) {
+					$alert_type = isset( $_SESSION[ 'tempalert_type' ] ) ? $_SESSION[ 'tempalert_type' ] : 'success';
 					?>
 					alertify.logPosition("bottom right");
-					timer = setTimeout(function(){alertify.delay(10000).success('<?=$_SESSION['tempalert']?>');},500);
-
-					<?
-					unset($_SESSION['tempalert']);
+					<?php
+					if( 'success' == $alert_type ) {
+						?>timer = setTimeout(function(){alertify.delay(10000).success('<?=$_SESSION['tempalert']?>');},500);<?
+					} else {
+						?>timer = setTimeout(function(){alertify.delay(10000).error('<?=$_SESSION['tempalert']?>');},500);<?
+					}
+					unset( $_SESSION[ 'tempalert' ] );
+					unset( $_SESSION[ 'tempalert_type' ] );
 				}
 				?>
 

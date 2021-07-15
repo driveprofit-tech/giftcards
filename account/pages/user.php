@@ -2,13 +2,6 @@
 	<div class="col-xs-12">
 		<div class="whitebox box-secondary shadow-medium border-left-secondary">
 
-			<div class="whitebox-title d-flex align-items-center">
-				<h4 class="flex-1">
-					<span class="valign-middle">Add a new user</span>
-					<span class="valign-middle p-2 helper" title="Use this form to add a new user to your giftcards system." data-toggle="tooltip"><i class="fas fa-fw fa-question-circle"></i></span>
-				</h4>
-			</div>
-
             <div class="whitebox-content">
 
 			<?
@@ -27,41 +20,53 @@
 			}
 			?>
 			<form method="post" action="" enctype="multipart/form-data" id="frm_user" autocomplete="off">
-				<div class="form-group">
-					<label class="control-label" for="name">Name*</label>
-					<input name="name" type="text" class="form-control" id="name" placeholder="Enter name" required="" value="<?=(isset($POPULATE_FORM['name']) ? $POPULATE_FORM['name'] : "")?>">
+				<div class="setting d-lg-flex mt-4 mt-lg-0">
+					<label class="setting-label" for="name">Name*</label>
+					<div class="flex-grow-1 setting-field">
+						<input name="name" type="text" class="form-control" id="name" placeholder="Enter name" required="" value="<?=(isset($POPULATE_FORM['name']) ? $POPULATE_FORM['name'] : "")?>">
+					</div>
 				</div>
-				<div class="form-group">
-					<label class="control-label" for="formname">Login email*</label>
-					<input name="email" type="email" class="form-control" id="formname" placeholder="Enter Login Email" required="" value="<?=(isset($POPULATE_FORM['email']) ? $POPULATE_FORM['email'] : "")?>" data-error="Please enter a valid email address.">
-					<div class="help-block with-errors small bg-danger text-white"></div>
+				<div class="setting d-lg-flex mt-4 mt-lg-0">
+					<label class="setting-label" for="formname">Login email*</label>
+					<div class="flex-grow-1 setting-field">
+						<input name="email" type="email" class="form-control" id="formname" placeholder="Enter Login Email" required="" value="<?=(isset($POPULATE_FORM['email']) ? $POPULATE_FORM['email'] : "")?>" data-error="Please enter a valid email address.">
+						<div class="help-block with-errors small bg-danger text-white"></div>
+					</div>
 				</div>
-				<div class="form-group">
-					<label class="control-label" for="formpassword">Password*</label>
-					<input name="password" type="text" class="form-control" id="formpassword" placeholder="Enter Password" required="" value="<?=(isset($POPULATE_FORM['password']) ? $POPULATE_FORM['password'] : "")?>">
+				<div class="setting d-lg-flex mt-4 mt-lg-0">
+					<label class="setting-label" for="formpassword">Password*</label>
+					<div class="flex-grow-1 setting-field">
+						<input name="password" type="text" class="form-control" id="formpassword" placeholder="Enter Password" required="" value="<?=(isset($POPULATE_FORM['password']) ? $POPULATE_FORM['password'] : "")?>">
+					</div>
 				</div>
-				<div class="form-group">
-					<label class="control-label" for="formadmin">User Type*</label>
-					<select name="admin" id="formadmin" class="form-control" required="">
-						<option value="">Please Select</option>
-						<option value="on" <?=($POPULATE_FORM['admin'] == "on" ? "selected" : "")?>>Admin user</option>
-						<option value="off" <?=($POPULATE_FORM['admin'] == "off" ? "selected" : "")?>>Basic user</option>
-					</select>
-					<div class="help-block small">Admin users have full access to manage all components.</div>
+				<div class="setting d-lg-flex mt-4 mt-lg-0">
+					<label class="setting-label" for="formadmin">User Type*</label>
+					<div class="flex-grow-1 setting-field">
+						<select name="admin" id="formadmin" class="form-control" required="">
+							<option value="">Please Select</option>
+							<option value="on" <?=($POPULATE_FORM['admin'] == "on" ? "selected" : "")?>>Admin user</option>
+							<option value="off" <?=($POPULATE_FORM['admin'] == "off" ? "selected" : "")?>>Basic user</option>
+						</select>
+						<div class="help-block small">Admin users have full access to manage all components.</div>
+					</div>
 				</div>
-				<div class="form-group">
-					<label class="control-label" for="formadmin">Status*</label>
-					<select name="status" id="status" class="form-control" required="">
-						<option value="">Please Select</option>
-						<option value="active" <?=($POPULATE_FORM['status'] == "active" ? "selected" : "")?>>Active</option>
-						<option value="inactive" <?=($POPULATE_FORM['status'] == "inactive" ? "selected" : "")?>>Inactive</option>
-					</select>
-					<div class="help-block small">Inactive users are not able to access their accounts.</div>
+				<div class="setting d-lg-flex mt-4 mt-lg-0">
+					<label class="setting-label" for="formadmin">Status*</label>
+					<div class="flex-grow-1 setting-field">
+						<select name="status" id="status" class="form-control" required="">
+							<option value="">Please Select</option>
+							<option value="active" <?=($POPULATE_FORM['status'] == "active" ? "selected" : "")?>>Active</option>
+							<option value="inactive" <?=($POPULATE_FORM['status'] == "inactive" ? "selected" : "")?>>Inactive</option>
+						</select>
+						<div class="help-block small">Inactive users are not able to access their accounts.</div>
+					</div>
 				</div>
-				<div class="form-group">
-					<label class="control-label" for="formaccess_ip">Restrict access to a list of IP addresses</label>
-					<input name="access_ip" type="text" class="form-control" id="formaccess_ip" placeholder="Enter IP address(es)" value="<?=(isset($POPULATE_FORM['access_ip']) ? $POPULATE_FORM['access_ip'] : "")?>" pattern="^\*$|^(?:\d|1?\d\d|2[0-4]\d|25[0-5])(?:\.(?:\d|1?\d\d|2[0-4]\d|25[0-5])){3}(?:\s*,\s*(?:\d|1?\d\d|2[0-4]\d|25[0-5])(?:\.(?:\d|1?\d\d|2[0-4]\d|25[0-5])){3})*$" data-error="Please enter a valid format!">
-					<div class="help-block small">If you enter one or more IP addresses this user will not be allowed to access the system unless they are doing it from those locations. Make sure you enter valid IP addresses, separated by comma!</div>
+				<div class="setting d-lg-flex mt-4 mt-lg-0">
+					<label class="setting-label" for="formaccess_ip">Restrict access to a list of IP addresses</label>
+					<div class="flex-grow-1 setting-field">
+						<input name="access_ip" type="text" class="form-control" id="formaccess_ip" placeholder="Enter IP address(es)" value="<?=(isset($POPULATE_FORM['access_ip']) ? $POPULATE_FORM['access_ip'] : "")?>" pattern="^\*$|^(?:\d|1?\d\d|2[0-4]\d|25[0-5])(?:\.(?:\d|1?\d\d|2[0-4]\d|25[0-5])){3}(?:\s*,\s*(?:\d|1?\d\d|2[0-4]\d|25[0-5])(?:\.(?:\d|1?\d\d|2[0-4]\d|25[0-5])){3})*$" data-error="Please enter a valid format!">
+						<div class="help-block small">If you enter one or more IP addresses this user will not be allowed to access the system unless they are doing it from those locations. Make sure you enter valid IP addresses, separated by comma!</div>
+					</div>
 				</div>
 				<div class="mt-5 pt-5 form-footer border-top-secondary border-width-1 border-top-dotted d-flex">
 					<button type="button" onclick="history.go(-1); return false;" class="btn btn-warning btn-split" title="Return to the previous page" data-toggle="tooltip"><i class="fas fa-fw fa-arrow-left"></i>Cancel</button>
