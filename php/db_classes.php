@@ -1,5 +1,5 @@
 <?php
-	
+
 	class account extends MyActiveRecord{}
 	class account_globals extends MyActiveRecord{
 
@@ -10,7 +10,7 @@
 		}
 	}
 
-	class account_user extends MyActiveRecord{}	
+	class account_user extends MyActiveRecord{}
 	class account_user_logs extends MyActiveRecord{}
 	class account_user_notification extends MyActiveRecord{}
 
@@ -25,7 +25,7 @@
 			$add_join = array();
 
 			$add_cond[] = "account_purchase.account_id = " . MyActiveRecord::Escape($_SESSION['user']['account_id']);
-		
+
 			// Add search conditions
 			if (isset($params['search']) && !empty($params['search']))
 			{
@@ -78,7 +78,7 @@
 					$add_cond[] = "((" . join(") OR (", $add_cond_where) . "))";
 				}
 			}
-			
+
 			// Set fields depending on query type
 			$fields_part = array();
 			if ($in_count_mode)
@@ -87,10 +87,10 @@
 			}
 			else
 			{
-				$fields_part[] = "account_purchase.*, (SELECT account_giftcard.name FROM account_giftcard WHERE account_purchase.account_giftcard_id = account_giftcard.id) AS giftcard_name";				
+				$fields_part[] = "account_purchase.*, (SELECT account_giftcard.name FROM account_giftcard WHERE account_purchase.account_giftcard_id = account_giftcard.id) AS giftcard_name";
 			}
 			$fields = join(", ", $fields_part);
-			
+
 			// Init query
 			$full_query = "SELECT " . $fields . " FROM account_purchase";
 			// Add joins
@@ -103,23 +103,23 @@
 				$full_query .= " WHERE " . join(" AND ", $add_cond);
 			}
 
-			// Build order conditions 
+			// Build order conditions
 			$order_by = "";
 			if (isset($params['order_by']) && sizeof($params['order_by']) > 0)
 			{
 				$order_by = " ORDER BY " . join(", ", $params['order_by']);
 			}
-			
+
 			// Build limit
 			$limit = "";
 			if (isset($params['start']) && isset($params['length']))
 			{
 				$limit = " LIMIT " . $params['start'] . ', ' . $params['length'];
-			}	
-			
+			}
+
 			// Add order and limit, but not in count mode
 			$full_query_all = $full_query
-			. (!$in_count_mode ? $order_by : "") 
+			. (!$in_count_mode ? $order_by : "")
 			. (!$in_count_mode ? $limit : "");
 
 			return $full_query_all;
@@ -127,7 +127,7 @@
 
 		function get_list($params)
 		{
-			
+
 			// Get the total number of records
 			$full_query_all_count = self::build_query($params, 1);
 			$rec = mysqli_fetch_assoc(MyActiveRecord::Query($full_query_all_count));
@@ -138,42 +138,42 @@
 			//die($full_query_all);
 			$items = MyActiveRecord::FindBySql("account_purchase", $full_query_all);
 
-			// Process records	
+			// Process records
 			$row_data = array();
 			if(!empty($items))
 			{
-				
-				foreach ($items as $item) 
+
+				foreach ($items as $item)
 				{
 					$this_row = array();
-			
+
 					$this_row[] = "<strong>" . $item->id . "</strong>";
 					$this_row[] = "<strong>" . $item->giftcard_name .  "</strong><br/>" . $item->benefits;
 					$this_row[] = "<strong>" . $item->receiver_name . "</strong><br/><a href=\"mailto:" . $item->receiver_email . "\">" . $item->receiver_email . "</a><br/>" . "Code: " . $item->receiver_code;
 
-					
+
 					$this_row[] = "$" . number_format($item->price_total, 2);
 
-					$payment_info = ($item->payment_gateway) != "" ? "<span class=\"label bg-blue\">" . strtoupper($item->payment_gateway) . "</span></br>" : "";
-					$payment_info .= (($item->payment_status == "paid" ? "<span class=\"label bg-green\">PAID</span>" : (($item->payment_status == "rejected") ? "<span class=\"label bg-red\">REJECTED</span>" : "<span class=\"label bg-red\">NOT PAID</span>")));
+					$payment_info = ($item->payment_gateway) != "" ? "<span class=\"label m-1 bg-info\">" . ucfirst($item->payment_gateway) . "</span>" : "";
+					$payment_info .= (($item->payment_status == "paid" ? "<span class=\"label m-1 bg-success\">Paid</span>" : (($item->payment_status == "rejected") ? "<span class=\"label m-1 bg-danger\">REJECTED</span>" : "<span class=\"label m-1 bg-danger\">Not paid</span>")));
 					$this_row[] = $payment_info;
 
-					$this_row[] = ($item->sent_status == "sent" ? "<span class=\"label bg-green\">SENT</span>" : ($item->sent_status == "error" ? "<span class=\"label bg-red\">ERROR</span>" : "<span class=\"label bg-yellow\">QUEUED</span>"));
+					$this_row[] = ($item->sent_status == "sent" ? "<span class=\"label m-1 bg-success\">Sent</span>" : ($item->sent_status == "error" ? "<span class=\"label m-1 bg-danger\">Error</span>" : "<span class=\"label m-1 bg-warning\">Queued</span>"));
 
 					$this_row[] = "<input type=\"checkbox\" " . ($item->redeemed == "on" ? "checked" : "") . " data-toggle=\"toggle\" class=\"toggle-status\" data-on=\"Yes\" data-onstyle=\"success\" data-off=\"No\" data-size=\"mini\" id=\"redeemed_" . $item->id . "\" data-status=\"" . $item->redeemed . "\">";
 					$this_row[] = date("m/d/Y g:i A", strtotime($item->added_on));
-					
+
 					$row_data[] = $this_row;
 
 				}
 			}
-			
+
 			// Return records
 			return array("row_data"=>$row_data, "row_total"=>$total_rows);
-			
+
 		}
 	}
-	
+
 	class globals extends MyActiveRecord{
 
 		function getvalue($name)
@@ -181,7 +181,7 @@
 			$row = MyActiveRecord::FindFirst('globals', array("name"=>$name));
 			return $row->value;
 		}
-	}	
+	}
 
 	class category extends MyActiveRecord{}
 	class giftcard extends MyActiveRecord{}
