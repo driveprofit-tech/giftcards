@@ -53,14 +53,46 @@
 
 			(function($) {
 
+				$('[data-toggle="tooltip"]').tooltip();
+
+				// File input
+				$('input[type="file"]').each(function() {
+
+					var $input = $(this),
+						$label = $input.next('div').find('label');
+
+					// Manage .focus class on label element
+					$input.on('focus', function() {
+						$label.addClass('focus');
+					});
+					$input.on('blur', function() {
+						$label.removeClass('focus');
+					});
+					$label.on('click', function() {
+						$label.addClass('focus');
+					});
+
+					$input.on('change', function() {
+						if(this.files.length == 1) {
+							$label.find('span').text(this.files[0].name);
+						};
+					});
+
+				});
+
 				<?
-				if(strlen($_SESSION['tempalert']) > 1){
+				if( strlen( $_SESSION[ 'tempalert' ] ) > 1 ) {
+					$alert_type = isset( $_SESSION[ 'tempalert_type' ] ) ? $_SESSION[ 'tempalert_type' ] : 'success';
 					?>
 					alertify.logPosition("bottom right");
-					timer = setTimeout(function(){alertify.delay(10000).success('<?=$_SESSION['tempalert']?>');},500);
-
-					<?
-					unset($_SESSION['tempalert']);
+					<?php
+					if( 'success' == $alert_type ) {
+						?>timer = setTimeout(function(){alertify.delay(10000).success('<?=$_SESSION['tempalert']?>');},500);<?
+					} else {
+						?>timer = setTimeout(function(){alertify.delay(10000).error('<?=$_SESSION['tempalert']?>');},500);<?
+					}
+					unset( $_SESSION[ 'tempalert' ] );
+					unset( $_SESSION[ 'tempalert_type' ] );
 				}
 				?>
 

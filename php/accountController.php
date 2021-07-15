@@ -11,7 +11,7 @@ class controller
         {
             $_SESSION['redirurl'] = rawurldecode($_GET['u']);
         }
-        
+
         if($_SESSION['loggedin'] != "yes" && $_GET['page'] != "login" && $_GET['page'] != "logout" && $_GET['page'] != "sulogin" && $_GET['page'] != "sso"){
 
              // Check autologin cookie
@@ -32,7 +32,7 @@ class controller
                     // If user found
                     if (is_object($theuser))
                     {
-                        
+
                         $account = MyActiveRecord::FindFirst('account', array("id"=>$theuser->account_id));
 
                         $restrict_ip_addresses = array();
@@ -47,7 +47,7 @@ class controller
                         if ((sizeof($restrict_ip_addresses) == 0) || in_array($_SERVER['REMOTE_ADDR'], $restrict_ip_addresses))
                         {
                             $autologin = true;
-                            
+
                             $_SESSION['loggedin'] = "yes";
                             $_SESSION['errorcount'] = 0;
                             $_SESSION['user']['id'] = $theuser->id;
@@ -59,7 +59,7 @@ class controller
                             $NEW_DATA = array();
                             $NEW_DATA['account_id'] = $theuser->account_id;
                             $NEW_DATA['user_id'] = $theuser->id;
-                            $NEW_DATA['sulogin'] = 0;       
+                            $NEW_DATA['sulogin'] = 0;
                             $NEW_DATA['ip'] = $_SERVER['REMOTE_ADDR'];
                             $NEW_DATA['moment'] = MyActiveRecord::DbDateTime();
                             $account_user_logs = new account_user_logs();
@@ -74,7 +74,7 @@ class controller
                         unset($_COOKIE["remember_login_" . session_name()]);
                         setcookie("remember_login_" . session_name(), null, -1);
                     }
-                }  
+                }
                 else
                 {
                     // Wrong cookie, clean it up
@@ -102,10 +102,10 @@ class controller
 
     function sulogin(){
 
-        if (isset($_GET['sess'])) 
+        if (isset($_GET['sess']))
         {
             $sess_data = explode("-", base64_decode($_GET['sess']), 5);
-            
+
             $account_id = $sess_data[0];
             $rand_seed = $sess_data[1];
             $ip = $sess_data[2];
@@ -133,7 +133,7 @@ class controller
                         $NEW_DATA = array();
                         $NEW_DATA['account_id'] = $theuser->account_id;
                         $NEW_DATA['user_id'] = $theuser->id;
-                        $NEW_DATA['sulogin'] = 1;       
+                        $NEW_DATA['sulogin'] = 1;
                         $NEW_DATA['ip'] = $_SERVER['REMOTE_ADDR'];
                         $NEW_DATA['moment'] = MyActiveRecord::DbDateTime();
                         $account_user_logs = new account_user_logs();
@@ -146,7 +146,7 @@ class controller
                 }
             }
 
-        }       
+        }
 
     }
     //end sulogin
@@ -154,9 +154,9 @@ class controller
 ///////////////////////////////////////////////////////////////////////////////////
 
     function login(){
-        
+
         if(strlen($_POST['user']) > 2 && strlen($_POST['password']) > 2){
-            
+
             // Only if not too many errors
             if($_SESSION['errorcount'] < 5)
             {
@@ -194,7 +194,7 @@ class controller
                                 $NEW_DATA = array();
                                 $NEW_DATA['account_id'] = $theuser->account_id;
                                 $NEW_DATA['user_id'] = $theuser->id;
-                                $NEW_DATA['sulogin'] = 0;       
+                                $NEW_DATA['sulogin'] = 0;
                                 $NEW_DATA['ip'] = $_SERVER['REMOTE_ADDR'];
                                 $NEW_DATA['moment'] = MyActiveRecord::DbDateTime();
                                 $account_user_logs = new account_user_logs();
@@ -219,40 +219,44 @@ class controller
                                 {
                                     $redirect_to = "index.php?page=home";
                                 }
-                                header("Location: " . $redirect_to);                    
+                                header("Location: " . $redirect_to);
                                 exit();
                         }
                         else
                         {
+							$_SESSION[ 'tempalert_type' ] = 'error';
                             $_SESSION['tempalert'] = "Username or password incorrect!";
                             $_SESSION['errorcount'] ++;
                         }
                     }
                     else
                     {
-                        $_SESSION['tempalert'] = "Your user is not permitted to access the system from your current IP address!";                       
+						$_SESSION[ 'tempalert_type' ] = 'error';
+						$_SESSION['tempalert'] = "Your user is not permitted to access the system from your current IP address!";
                         $msg = "IP address not allowed on: " . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
                         $msg .= "<br/>Account ID: " . $theuser->account_id;
                         $msg .= "<br/>User: " . $_POST['user'];
                         $msg .= "<br/>Allowed IP: " . $theuser->access_ip;
-                        $msg .= "<br/>IP Address: " . $_SERVER['REMOTE_ADDR'];                  
-                        mail("tech@driveprofit.com", "IP address not allowed", $msg);                       
+                        $msg .= "<br/>IP Address: " . $_SERVER['REMOTE_ADDR'];
+                        mail("tech@driveprofit.com", "IP address not allowed", $msg);
                     }
-                } 
+                }
                 else
                 {
+					$_SESSION[ 'tempalert_type' ] = 'error';
                     $_SESSION['tempalert'] = "Username or password incorrect!";
                     $_SESSION['errorcount'] ++;
-                }               
+                }
             }
             else
             {
+				$_SESSION[ 'tempalert_type' ] = 'error';
                 $_SESSION['tempalert'] = "Username or password incorrect! Please note that after 5 failed attempts you are locked out!";
                 $msg = "Password wrong on: " . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
                 $msg .= "<br/>IP Address: " . $_SERVER['REMOTE_ADDR'];
                 $msg .= "<br/>POST user: " . $_POST['user'];
                 $msg .= "<br/>POST password: " . $_POST['password'];
-                mail("tech@driveprofit.com", "Pasword wrong 5 times", $msg);                
+                mail("tech@driveprofit.com", "Pasword wrong 5 times", $msg);
             }
         }
 
@@ -289,10 +293,10 @@ class controller
             $count_purchases = MyActiveRecord::Count("account_purchase", array("account_id"=>$_SESSION['user']['account_id'], "payment_status"=>"paid"));
         }
 
-        
+
         $pgtitle = account_globals::getvalue($_SESSION['user']['account_id'], "site_name") . " - Dashboard";
         $onpgtitle = "Dashboard";
-        
+
         include_once("pages/header.php");
         include_once("pages/home.php");
         include_once("pages/footer.php");
@@ -313,7 +317,7 @@ class controller
         }
 
         $account = MyActiveRecord::FindFirst("account", array("id"=>$_SESSION['user']['account_id']));
-        
+
         ////set allowed values here
         $group_settings = array(
             "general" => array("name"=>"General settings", "hint"=>"", "warning"=>"", "settings"=>array("site_name", "site_link", "site_favicon", "site_logo", "contact_link", "terms_of_use_link", "privacy_policy_link", "payment_gateway", "time_zone")),
@@ -333,12 +337,12 @@ class controller
         {
             $group_settings['paypal'] = array("name" => "PayPal settings", "hint" => "", "warning" => "For security reasons, the credentials entered here will be partially visible at any other time on this section. If you want to edit a setting, you'll have to re-enter it.", "settings" => array("paypal_sandbox", "paypal_username", "paypal_password", "paypal_signature"));
         }
-       
+
         if ($_GET['action'] == "check_domain")
         {
-            
+
             $domain = trim($_POST['check_domain']);
-            $domain = str_replace(array("http://", "https://"), "", $domain);                       
+            $domain = str_replace(array("http://", "https://"), "", $domain);
             if(!preg_match("/^(?:[-A-Za-z0-9]+\.)+[A-Za-z]{2,6}$/", $domain))
             {
                 echo "<span class=\"text-danger\">The domain does not seem valid!</span>";
@@ -357,7 +361,7 @@ class controller
             }
             exit;
         }
-        
+
         // When the form is submitted
         if (isset($_POST['save']) && ($_POST['save'] == "save"))
         {
@@ -370,7 +374,7 @@ class controller
                 elseif ($key == "authorize_api_login_id" && $value == "")
                 {
                     continue;
-                } 
+                }
                 elseif ($key == "authorize_transaction_key" && $value == "")
                 {
                     continue;
@@ -394,7 +398,7 @@ class controller
                 elseif ($key == "custom_booking_domain")
                 {
                     $domain = trim($_POST['custom_booking_domain']);
-                    $domain = str_replace(array("http://", "https://"), "", $domain);                       
+                    $domain = str_replace(array("http://", "https://"), "", $domain);
                     if (preg_match("/^(?:[-A-Za-z0-9]+\.)+[A-Za-z]{2,6}$/", $domain))
                     {
                         $ip = gethostbyname($domain);
@@ -412,7 +416,7 @@ class controller
                         $value = "";
                     }
                 }
-                                
+
                 // Update value for setting
                 if (isset($_POST[$key]))
                 {
@@ -432,7 +436,7 @@ class controller
                     }
                 }
             }
-               
+
             // Loop fields that require uploads
             if (isset($_FILES) && (sizeof($_FILES) > 0))
             {
@@ -453,8 +457,8 @@ class controller
 
                             // Check file extension
                             if (in_array(strtolower($extension), array("jpg", "png", "gif")))
-                            {                                                                                                                   
-                                
+                            {
+
                                 // Delete old file
                                 if ($itemstolist[$key]->value != ""){
                                     @unlink($target_dir . $itemstolist[$key]->value);
@@ -466,15 +470,15 @@ class controller
                                     while (file_exists($target_dir . $name . $number . "." . $extension)){
                                         $number ++;
                                     }
-                                    $name = $name . $number; 
+                                    $name = $name . $number;
                                 }
-                                
+
                                 // Try to upload file
                                 $target_file = $target_dir . $name . "." . $extension;
                                 // Set new logo file name
                                 if(move_uploaded_file($_FILES['site_logo']['tmp_name'], $target_file))
                                 {
-                                    
+
                                     $global = MyActiveRecord::FindById("account_globals", $itemstolist[$key]->id);
                                     if(is_object($global))
                                     {
@@ -497,7 +501,7 @@ class controller
                                     $global->save();
                                 }
                             }
-                     
+
                         }
                     }
                     // Special case for site favicon
@@ -515,8 +519,8 @@ class controller
 
                             // Check file extension
                             if (in_array(strtolower($extension), array("ico")))
-                            {                                                                                                                   
-                                
+                            {
+
                                 // Delete old file
                                 if ($itemstolist[$key]->value != ""){
                                     @unlink($target_dir . $itemstolist[$key]->value);
@@ -528,9 +532,9 @@ class controller
                                     while (file_exists($target_dir . $name . $number . "." . $extension)){
                                         $number ++;
                                     }
-                                    $name = $name . $number; 
+                                    $name = $name . $number;
                                 }
-                                
+
                                 // Try to upload file
                                 $target_file = $target_dir . $name . "." . $extension;
                                 // Set new favicon file name
@@ -575,8 +579,8 @@ class controller
 
                             // Check file extension
                             if (in_array(strtolower($extension), array("jpg", "png", "gif")))
-                            {                                                                                                                   
-                                
+                            {
+
                                 // Delete old file
                                 if ($itemstolist[$key]->value != ""){
                                     @unlink($target_dir . $itemstolist[$key]->value);
@@ -588,9 +592,9 @@ class controller
                                     while (file_exists($target_dir . $name . $number . "." . $extension)){
                                         $number ++;
                                     }
-                                    $name = $name . $number; 
+                                    $name = $name . $number;
                                 }
-                                
+
                                 // Try to upload file
                                 $target_file = $target_dir . $name . "." . $extension;
                                 // Set new favicon file name
@@ -635,8 +639,8 @@ class controller
 
                             // Check file extension
                             if (in_array(strtolower($extension), array("jpg", "png", "gif")))
-                            {                                                                                                                   
-                                
+                            {
+
                                 // Delete old file
                                 if ($itemstolist[$key]->value != ""){
                                     @unlink($target_dir . $itemstolist[$key]->value);
@@ -648,9 +652,9 @@ class controller
                                     while (file_exists($target_dir . $name . $number . "." . $extension)){
                                         $number ++;
                                     }
-                                    $name = $name . $number; 
+                                    $name = $name . $number;
                                 }
-                                
+
                                 // Try to upload file
                                 $target_file = $target_dir . $name . "." . $extension;
                                 // Set new favicon file name
@@ -683,6 +687,7 @@ class controller
                 }
             }
 
+			$_SESSION[ 'tempalert_type' ] = 'success';
             $_SESSION['tempalert'] = "Settings updated!";
             header("Location: index.php?page=globals" . (isset($_POST['group']) && $_POST['group'] != "" ? ("#" . $_POST['group']) : ""));
             exit();
@@ -735,8 +740,9 @@ class controller
                     }
                 }
             }
-                                
-            $_SESSION['tempalert'] = "User(s) removed!";
+
+			$_SESSION[ 'tempalert_type' ] = 'success';
+			$_SESSION['tempalert'] = "User(s) removed!";
             header("Location: index.php?page=manage-users");
             exit();
         }
@@ -763,8 +769,9 @@ class controller
                         $user->save();
                     }
                 }
-            }               
-                                
+            }
+
+			$_SESSION[ 'tempalert_type' ] = 'success';
             $_SESSION['tempalert'] = "User(s) activated!";
             header("Location: index.php?page=manage-users");
             exit();
@@ -792,8 +799,9 @@ class controller
                         $user->save();
                     }
                 }
-            }               
-                                
+            }
+
+			$_SESSION[ 'tempalert_type' ] = 'success';
             $_SESSION['tempalert'] = "User(s) deactivated!";
             header("Location: index.php?page=manage-users");
             exit();
@@ -817,9 +825,9 @@ class controller
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-    
+
     function user(){
-        
+
         if($_SESSION['user']['admin'] != "on")
         {
             session_destroy();
@@ -836,7 +844,7 @@ class controller
             {
                 header("Location: index.php?page=manage-users");
                 exit();
-            }                    
+            }
         }
         else
         {
@@ -846,7 +854,7 @@ class controller
         $POPULATE_FORM = (isset($_POST['save']) && ($_POST['save'] == "save")) ? $_POST : (($action == "edit") ? get_object_vars($user) : array());
 
         if (isset($_POST['save']) && ($_POST['save'] == "save"))
-        {            
+        {
 
             // Check for errors (required fields)
             $err_msg = "";
@@ -855,7 +863,7 @@ class controller
             $required_ok = !in_array("", $post_required);
             $check_unique = MyActiveRecord::FindFirst("account_user", array("email"=>$_POST['email']));
             $unique_ok = (!empty($check_unique) && (($action == "add") || ($action == "edit" && $check_unique->id != $user->id))) ? false : $unique_ok;
-            
+
             if ($required_ok && $unique_ok)
             {
 
@@ -871,6 +879,7 @@ class controller
                 $user->populate($NEW_DATA);
                 $user->save();
 
+				$_SESSION[ 'tempalert_type' ] = 'success';
                 $_SESSION['tempalert'] = "User successfully " . ($action == "edit" ? "modified" : "added") . "!";
                 header("Location: index.php?page=manage-users");
                 exit();
@@ -881,7 +890,7 @@ class controller
                 $err_msg .= ($required_ok == false) ? "<br/>Check the required fields." : "";
                 $err_msg .= ($unique_ok == false) ? "<br/>The email address is already set for another user." : "";
             }
-        } 
+        }
 
         $pgtitle = account_globals::getvalue($_SESSION['user']['account_id'], "site_name") . " - " . ($action == "edit" ? "Edit" : "Add") . " user";
         $onpgtitle = ($action == "edit" ? "Edit" : "Add") . " User";
@@ -896,7 +905,7 @@ class controller
     }
     //end user
 
-///////////////////////////////////////////////////////////////////////////////////   
+///////////////////////////////////////////////////////////////////////////////////
 
     function manage_giftcards(){
 
@@ -931,7 +940,8 @@ class controller
                     }
                 }
             }
-                                
+
+			$_SESSION[ 'tempalert_type' ] = 'success';
             $_SESSION['tempalert'] = "Giftcard(s) removed!";
             header("Location: index.php?page=manage-giftcards");
             exit();
@@ -959,8 +969,9 @@ class controller
                         $giftcard->save();
                     }
                 }
-            }               
-                                
+            }
+
+			$_SESSION[ 'tempalert_type' ] = 'success';
             $_SESSION['tempalert'] = "Giftcard(s) activated!";
             header("Location: index.php?page=manage-giftcards");
             exit();
@@ -988,8 +999,9 @@ class controller
                         $giftcard->save();
                     }
                 }
-            }               
-                                
+            }
+
+			$_SESSION[ 'tempalert_type' ] = 'success';
             $_SESSION['tempalert'] = "Giftcard(s) deactivated!";
             header("Location: index.php?page=manage-giftcards");
             exit();
@@ -1024,9 +1036,9 @@ class controller
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-    
+
     function giftcard(){
-        
+
         if($_SESSION['user']['admin'] != "on")
         {
             session_destroy();
@@ -1043,7 +1055,7 @@ class controller
             {
                 header("Location: index.php?page=manage-giftcards");
                 exit();
-            }                    
+            }
         }
         else
         {
@@ -1053,14 +1065,14 @@ class controller
         $POPULATE_FORM = (isset($_POST['save']) && ($_POST['save'] == "save")) ? $_POST : (($action == "edit") ? get_object_vars($account_giftcard) : array());
 
         if (isset($_POST['save']) && ($_POST['save'] == "save"))
-        {            
+        {
 
             // Check for errors (required fields)
             $err_msg = "";
             $required_ok = true;
             $post_required = array($_POST['name'], $_POST['status']);
             $required_ok = !in_array("", $post_required);
-            
+
             if ($required_ok)
             {
 
@@ -1077,7 +1089,7 @@ class controller
                 if ($account_giftcard->id > 0)
                 {
                     $image_types = array("image");
-                    foreach ($image_types as $type) 
+                    foreach ($image_types as $type)
                     {
                         if (isset($_FILES[$type]['name']) && ($_FILES[$type]['name'] != ""))
                         {
@@ -1095,7 +1107,7 @@ class controller
                             elseif(($_FILES[$type]['size'] / (1024 * 1024)) > 5)
                             {
                                 $err_img = 2;
-                            } 
+                            }
                             else
                             {
                                 list($width, $height) = getimagesize($_FILES[$type]['tmp_name']);
@@ -1105,17 +1117,17 @@ class controller
                                 }
                             }
                             if ($err_img == 0)
-                            {                                                                                                                   
+                            {
                                 if (($action == "edit") && ($fleet->{$type} != ""))
                                 {
                                     @unlink($target_dir . $fleet->{$type});
-                                }        
+                                }
                                 if (file_exists($target_dir . $name . "." . $extension)) {
                                     $number = 1;
                                     while (file_exists($target_dir . $name . $number . "." . $extension)){
                                         $number ++;
                                     }
-                                    $name = $name . $number; 
+                                    $name = $name . $number;
                                 }
                                 $target_file = $target_dir . $name . "." . $extension;
                                 if(move_uploaded_file($_FILES[$type]['tmp_name'], $target_file))
@@ -1132,6 +1144,7 @@ class controller
                     }
                 }
 
+				$_SESSION[ 'tempalert_type' ] = 'success';
                 $_SESSION['tempalert'] = "Giftcard successfully " . ($action == "edit" ? "modified" : "added") . "!";
                 header("Location: index.php?page=manage-giftcards");
                 exit();
@@ -1141,7 +1154,7 @@ class controller
                 $err_msg .= "Giftcard not " . ($action == "edit" ? "modified" : "added") . "!";
                 $err_msg .= ($required_ok == false) ? "<br/>Check the required fields." : "";
             }
-        } 
+        }
 
         $pgtitle = account_globals::getvalue($_SESSION['user']['account_id'], "site_name") . " - " . ($action == "edit" ? "Edit" : "Add") . " giftcard";
         $onpgtitle = ($action == "edit" ? "Edit" : "Add") . " Giftcard";
@@ -1156,7 +1169,7 @@ class controller
     }
     //end giftcard
 
-///////////////////////////////////////////////////////////////////////////////////   
+///////////////////////////////////////////////////////////////////////////////////
 
     function giftcard_gallery(){
 
@@ -1173,7 +1186,7 @@ class controller
             {
                 foreach ($_POST['sel_giftcard'] as $sel)
                 {
-                    
+
                     $giftcard = MyActiveRecord::FindFirst('giftcard', array("id"=>$sel), "id DESC");
                     $account_giftcard = new account_giftcard();
 
@@ -1183,16 +1196,16 @@ class controller
                     $extension = $path_parts['extension'];
 
                     $target_dir = "../assets/" . $_SESSION['user']['account_id'] . "/";
-                                                                                                                                      
+
                     if (file_exists($target_dir . $name . "." . $extension)) {
                         $number = 1;
                         while (file_exists($target_dir . $name . $number . "." . $extension)){
                             $number ++;
                         }
-                        $name = $name . $number; 
+                        $name = $name . $number;
                     }
                     $target_file = $target_dir . $name . "." . $extension;
-                    copy($source, $target_file);                    
+                    copy($source, $target_file);
 
                     $NEW_DATA = array();
                     $NEW_DATA['account_id'] = $_SESSION['user']['account_id'];
@@ -1207,12 +1220,14 @@ class controller
                     $account_giftcard->save();
                 }
 
+				$_SESSION[ 'tempalert_type' ] = 'success';
                 $_SESSION['tempalert'] = "Giftcards successfully added to your inventory!";
                 header("Location: index.php?page=manage-giftcards");
                 exit();
             }
             else
             {
+				$_SESSION[ 'tempalert_type' ] = 'error';
                 $_SESSION['tempalert'] = "No giftcards selected!";
                 header("Location: index.php?page=giftcard-gallery");
                 exit();
@@ -1223,7 +1238,14 @@ class controller
         $onpgtitle = "Giftcard Gallery";
 
         $pagebreadcrumb = array(
-            array("page"=>"Giftcard Gallery", "url"=>"giftcard-gallery"),
+			array(
+				'page' => 'Manage Giftcards',
+				'url' => 'manage-giftcards',
+			),
+            array(
+				'page' => 'Giftcard Gallery',
+				'url' => 'giftcard-gallery',
+			),
         );
 
         include_once("pages/header.php");
@@ -1243,6 +1265,7 @@ class controller
                 $purchase->populate(array("redeemed" => $_GET['mark_redeemed']));
                 $purchase->save();
 
+				$_SESSION[ 'tempalert_type' ] = 'success';
                 $_SESSION['tempalert'] = "Purchase successfully marked as " . ($_GET['mark_redeemed'] == "on" ? "redeemed" : "not redeemed") . "!";
                 header("Location: index.php?page=manage-purchases");
                 exit();
@@ -1270,7 +1293,7 @@ class controller
         $giftcards = MyActiveRecord::FindAll('account_giftcard', array("account_id"=>$_SESSION['user']['account_id']), 'name ASC');
 
         // Export to excel
-        if (isset($_GET['export']) && ($_GET['export'] == 1)) {            
+        if (isset($_GET['export']) && ($_GET['export'] == 1)) {
 
             $daterangepicker_data = daterangepicker_data($_GET['period'], $_GET['daterange']);
             $predefined_ranges = $daterangepicker_data['predefined_ranges'];
@@ -1308,13 +1331,13 @@ class controller
 
             $full_query = "SELECT account_purchase.*,
                             (SELECT account_giftcard.name FROM account_giftcard WHERE account_purchase.account_giftcard_id = account_giftcard.id) AS giftcard_name
-                            FROM account_purchase 
+                            FROM account_purchase
                             WHERE " . join(" AND ", $ADD_COND) . "
                             ORDER BY id ASC";
 
             $items = MyActiveRecord::FindBySql('account_purchase', $full_query);
 
-        
+
             include 'lib/phpexcel178/Classes/PHPExcel/IOFactory.php';
 
             // Create new PHPExcel object
@@ -1367,7 +1390,7 @@ class controller
             $objWriter->save('php://output');
             exit();
         }
-        
+
         $pgtitle = account_globals::getvalue($_SESSION['user']['account_id'], "site_name") . " - Giftcards Purchased";
         $onpgtitle = "Giftcards Purchased";
 
@@ -1384,27 +1407,27 @@ class controller
 ///////////////////////////////////////////////////////////////////////////////////
 
 	function sso() {
-        
+
 		$encrypted_guid = isset($_GET['enguid']) ? $_GET['enguid'] : "";
-			
-		$decryption_iv = '1234567891011121'; 
-		$decryption_key = "mygiftcards-product"; 
-		$ciphering = "AES-128-CTR"; 
-		$options = 0; 
-		$guid = openssl_decrypt($encrypted_guid, $ciphering, $decryption_key, $options, $decryption_iv); 
+
+		$decryption_iv = '1234567891011121';
+		$decryption_key = "mygiftcards-product";
+		$ciphering = "AES-128-CTR";
+		$options = 0;
+		$guid = openssl_decrypt($encrypted_guid, $ciphering, $decryption_key, $options, $decryption_iv);
 
 		if($guid != "")
 		{
-					
-			$theuser = MyActiveRecord::FindFirst('account_user', array("guid" => $guid), "id ASC");		
-			
-			if (!empty($theuser)) 
+
+			$theuser = MyActiveRecord::FindFirst('account_user', array("guid" => $guid), "id ASC");
+
+			if (!empty($theuser))
 			{
 				if($theuser->status == "active")
 				{
-				
+
 					$account = MyActiveRecord::FindFirst('account', array("id" => $theuser->account_id, "status" => "active"));
-					
+
 					if($account->status == "active")
 					{
 						$_SESSION['loggedin'] = "yes";
@@ -1418,13 +1441,13 @@ class controller
 						$NEW_DATA = array();
 						$NEW_DATA['account_id'] = $theuser->account_id;
 						$NEW_DATA['user_id'] = $theuser->id;
-						$NEW_DATA['sulogin'] = 2;       
+						$NEW_DATA['sulogin'] = 2;
 						$NEW_DATA['ip'] = $_SERVER['REMOTE_ADDR'];
 						$NEW_DATA['moment'] = MyActiveRecord::DbDateTime();
 						$account_user_logs = new account_user_logs();
 						$account_user_logs->populate($NEW_DATA);
 						$account_user_logs->save();
-								
+
 						header("Location: index.php?page=home");
 						exit();
 					}
@@ -1451,7 +1474,7 @@ class controller
 
     //end sso
 
-   
+
 }//end class c_ajax
 
 ?>
